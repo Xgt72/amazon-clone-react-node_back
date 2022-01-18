@@ -5,6 +5,7 @@ const {
   createOneProduct,
   updateOneProduct,
   deleteOneProduct,
+  uploadFile,
 } = require("../controllers/products");
 const { authenticateWithJsonWebToken } = require("../controllers/jwt");
 
@@ -16,6 +17,8 @@ productsRouter.post(
   createOneProduct,
   getOneProductById
 );
+
+productsRouter.post("/upload-file", authenticateWithJsonWebToken, uploadFile);
 
 productsRouter.put(
   "/:id",
