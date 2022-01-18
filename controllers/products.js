@@ -1,3 +1,4 @@
+const multer = require("multer");
 const Product = require("../models/Product");
 
 const getAllProducts = async (req, res, next) => {
@@ -99,10 +100,34 @@ const deleteOneProduct = async (req, res, next) => {
     });
 };
 
+const uploadFile = (req, res) => {
+  const storage = multer.diskStorage({
+    destination: (_req, _file, cb) => {
+      cb(null, "public/images");
+    },
+    filename: (_, file, cb) => {
+      cb(null, `${Date.now()}-${file.originalname}`);
+    },
+  });
+
+  const upload = multer({ storage }).single("file");
+
+  upload(req, res, (err) => {
+    if (err) {
+      res.status(500).json(err);
+    } else {
+      // on peut sauvegarder le nom et d'autres données de l'image dans une table de la BDD
+      // ....
+      res.status(201).json({ filename: req.file.filename });
+    }
+  });
+}
+
 module.exports = {
   getAllProducts,
   getOneProductById,
   createOneProduct,
   updateOneProduct,
   deleteOneProduct,
+  uploadFile,
 };
